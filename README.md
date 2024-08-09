@@ -3,6 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [Deployed Website](#deployed-website)
 - [Features](#features)
 - [Setup and Installation](#setup-and-installation)
 - [Environment Variables](#environment-variables)
@@ -12,6 +13,12 @@
 ## Introduction
 
 The Inventory Management App is a web application designed to help users manage their inventory effectively. Users can add, remove, and update inventory items, scan items via image upload, and integrate with Firebase for authentication and storage. The app also utilizes OpenAI for advanced image processing to automatically recognize and count items in uploaded images.
+
+## Deployed Website
+
+You can access the live version of the Inventory Management App at the following link:
+
+[Inventory Management App - Live](https://inventory-management-mlgp9k3zh-george-zhangs-projects-c74cdd0e.vercel.app/)
 
 ## Features
 
