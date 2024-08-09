@@ -12,7 +12,7 @@ import { db, auth } from "../../firebase";
 import * as dotenv from "dotenv";
 
 // Load environment variables from .env file
-dotenv.config(); 
+dotenv.config();
 
 export default function Home({ params }) {
   // States for fetching inventory and adding new items to the inventory
@@ -65,8 +65,6 @@ export default function Home({ params }) {
 
       // Calculate total pages for pagination
       setTotalPages(Math.max(1, Math.ceil(inventoryList.length / itemsPerPage)));
-
-      
     } catch (error) {
       console.error("Error fetching user inventory:", error);
     } finally {
@@ -98,7 +96,7 @@ export default function Home({ params }) {
     } catch (error) {
       console.error("Error adding item to inventory:", error);
     } finally {
-      // Hide loading animation 
+      // Hide loading animation
       setIsLoading(false);
     }
   };
@@ -122,7 +120,7 @@ export default function Home({ params }) {
       }
 
       // Update and rerender inventory
-      await updateInventory(); 
+      await updateInventory();
     } catch (error) {
       console.error("Error uploading list of items to inventory:", error);
     } finally {
@@ -188,10 +186,10 @@ export default function Home({ params }) {
   const scanImage = async () => {
     // Make sure the user uploads an image file first
     if (!selectedFile) {
-      setError("Please select a valid image file first")
+      setError("Please select a valid image file first");
       return;
     }
-    setError("")
+    setError("");
 
     // Pre-process the image file into FormData type so that it can be properly scanned
     const formData = new FormData();
@@ -216,8 +214,8 @@ export default function Home({ params }) {
       const scannedResult = data.inventory;
 
       // Update scannedItems to be the result from scanning
-      setScannedItems(scannedResult.map((item) => ({...item, name: item.name.toLowerCase()})));
-      
+      setScannedItems(scannedResult.map((item) => ({ ...item, name: item.name.toLowerCase() })));
+
       // Set all items as selected
       setIsItemSelected(Array(scannedResult.length).fill(true));
 
@@ -233,13 +231,12 @@ export default function Home({ params }) {
 
   // Add scanned items to the inventory
   const handleAddScannedItems = () => {
-    
     // Helper function that combines two lists of items
     const combinedMap = new Map();
     const addToMap = (array) => {
       array.forEach(({ name, quantity }) => {
         if (!name) return;
-        
+
         if (combinedMap.has(name)) {
           combinedMap.set(name, combinedMap.get(name) + quantity);
         } else {
@@ -247,7 +244,7 @@ export default function Home({ params }) {
         }
       });
     };
-    
+
     // Combine the selected items with the ones that were in the inventory originally
     addToMap(inventory);
     addToMap(scannedItems.filter((_, idx) => isItemSelected[idx]));
@@ -264,7 +261,7 @@ export default function Home({ params }) {
   const handleEditScannedItem = (index, field, value) => {
     // Make sure the quantity is not negative
     if (field == "quantity") {
-      value = Math.abs(value)
+      value = Math.abs(value);
     }
     const newItems = [...scannedItems];
     newItems[index] = { ...newItems[index], [field]: value };
@@ -277,6 +274,57 @@ export default function Home({ params }) {
     newIsItemSelected[index] = !newIsItemSelected[index];
     setIsItemSelected(newIsItemSelected);
   };
+
+  const handleExport = async () => {
+    try {
+      // Show loading animation
+      setIsLoading(true);
+
+      // Send a POST request to the server to trigger the CSV export
+      const response = await fetch("/api/exportInventory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inventory), // Convert the inventory array to a JSON string and send it as the request body
+      });
+
+      // Check if the response is OK
+      if (!response.ok) {
+        alert("Invalid inventory data")
+        throw new Error("Failed to export inventory");
+      }
+
+      // Convert the response into a Blob object representing the CSV file
+      const blob = await response.blob();
+
+      // Create a URL for the Blob object to allow downloading it
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary anchor element to trigger the download
+      const a = document.createElement("a");
+
+      // Set the href attribute to the Blob URL
+      a.href = url;
+
+      // Set the download attribute with the desired file name
+      a.download = "inventory.csv";
+
+      // Append the anchor to the document body and trigger a click to start the download
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up by removing the anchor element from the document
+      document.body.removeChild(a);
+    } catch (error) {
+      // Log any errors that occur during the export process
+      console.error("Failed to export CSV:", error);
+    } finally {
+      // Hide loading animation
+      setIsLoading(false);
+    }
+  };
+
 
   // Handle pagination next page
   const handleNextPage = () => {
@@ -337,16 +385,21 @@ export default function Home({ params }) {
       {/* Navigation Bar */}
       <nav className="bg-gray-800 p-4 flex justify-between items-center">
         <div className="text-white text-lg">Inventory Management</div>
-        <button
-          onClick={async () => {
-            alertShown.current = true;
-            await signOut(auth); // Sign out the user
-            router.push("/auth/login"); // Redirect to login page
-          }}
-          className="text-white bg-slate-950 hover:bg-slate-900 p-2 rounded"
-        >
-          Sign Out
-        </button>
+        <div className="space-x-2">
+          <button onClick={handleExport} className="text-white bg-slate-950 hover:bg-slate-900 p-2 rounded">
+            Export
+          </button>
+          <button
+            onClick={async () => {
+              alertShown.current = true;
+              await signOut(auth); // Sign out the user
+              router.push("/auth/login"); // Redirect to login page
+            }}
+            className="text-white bg-slate-950 hover:bg-slate-900 p-2 rounded"
+          >
+            Sign Out
+          </button>
+        </div>
       </nav>
       <main className="flex min-h-screen flex-col items-center justify-between sm:p-12 p-4">
         <div className="z-10 max-w-5xl w-full items-center justify-between text-sm">

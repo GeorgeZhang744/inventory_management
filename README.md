@@ -18,7 +18,7 @@ The Inventory Management App is a web application designed to help users manage 
 
 You can access the live version of the Inventory Management App at the following link:
 
-<a href="https://inventory-management-mlgp9k3zh-george-zhangs-projects-c74cdd0e.vercel.app/" target="_blank">Inventory Management App - Live</a>
+[Inventory Management App - Live](https://inventory-management-mlgp9k3zh-george-zhangs-projects-c74cdd0e.vercel.app/)
 
 ## Features
 
@@ -26,6 +26,7 @@ You can access the live version of the Inventory Management App at the following
 - Allow user to keep track of the inventory items under their user account
 - Add, remove, and update inventory items
 - Image scanning for automatic inventory recognition using OpenAI
+- Export inventory to CSV file
 
 ## Setup and Installation
 
@@ -106,9 +107,11 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
 4. **Search Items** Search items base on their names.
 5. **Scan Items:** Upload an image of items to automatically recognize and count them.
 6. **View Inventory:** Browse through your inventory with pagination support.
+7. **Export Inventory:** Export your inventory to a CSV file.
 
 ## API Endpoints
 
 The app includes custom API routes for handling different tasks:
 
 - **POST `/api/scanImage`**: Handles image uploads and processes the image using OpenAI to identify inventory items.
+- **POST `/api/exportInventory`**: Exports inventory data provided in the request body to a CSV file.
