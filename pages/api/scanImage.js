@@ -17,21 +17,11 @@ export const config = {
   },
 };
 
-// Define the directory to store uploaded files
-const uploadDir = "./uploads"; 
-
-// Check if the upload directory exists, and create it if it doesn't
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
 // Define the API route handler
 const handler = async (req, res) => {
   // Handle only POST requests
   if (req.method === "POST") {
     const form = new IncomingForm(); // Create a new Formidable form instance
-    form.uploadDir = uploadDir; // Set the directory for file uploads
-    form.keepExtensions = true; // Keep file extensions in uploaded files
 
     // Parse the incoming form data, including file uploads
     form.parse(req, async (err, fields, files) => {
@@ -116,18 +106,7 @@ const handler = async (req, res) => {
         // Handle errors during image processing
         console.error("Error processing the image:", error);
         res.status(500).json({ error: "Error processing the image" });
-      } finally {
-        // Clean up the uploaded file after processing
-        try {
-          if (filePath) {
-            fs.unlinkSync(filePath);
-          } else {
-            console.warn("No file path to clean up");
-          }
-        } catch (unlinkError) {
-          console.error("Error cleaning up the file:", unlinkError);
-        }
-      }
+      } 
     });
   } else {
     // Respond with a 405 error if the method is not POST
