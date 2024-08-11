@@ -259,7 +259,7 @@ export default function Home({ params }) {
         if (!name) return;
 
         // Make sure quantity is positive
-        const processed_quantity = quantity > 0 ? quantity : 0
+        const processed_quantity = quantity > 0 ? parseInt(quantity) : 0;
 
         if (combinedMap.has(name)) {
           combinedMap.set(name, combinedMap.get(name) + processed_quantity);
