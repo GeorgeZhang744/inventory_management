@@ -258,10 +258,13 @@ export default function Home({ params }) {
       array.forEach(({ name, quantity }) => {
         if (!name) return;
 
+        // Make sure quantity is positive
+        const processed_quantity = quantity > 0 ? quantity : 0
+
         if (combinedMap.has(name)) {
-          combinedMap.set(name, combinedMap.get(name) + quantity);
+          combinedMap.set(name, combinedMap.get(name) + processed_quantity);
         } else {
-          combinedMap.set(name, quantity);
+          combinedMap.set(name, processed_quantity);
         }
       });
     };
@@ -280,10 +283,6 @@ export default function Home({ params }) {
 
   // Handle onChange event for the scanned items (update the value of the 'field' of the item at index 'index' of the scanned item list to new 'value')
   const handleEditScannedItem = (index, field, value) => {
-    // Make sure the quantity is not negative
-    if (field == "quantity") {
-      value = Math.abs(value);
-    }
     const newItems = [...scannedItems];
     newItems[index] = { ...newItems[index], [field]: value };
     setScannedItems(newItems);
