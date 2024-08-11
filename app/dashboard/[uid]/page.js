@@ -161,6 +161,27 @@ export default function Home({ params }) {
     }
   };
 
+  const deleteItem = async (item) => {
+    try {
+      // Show loading animation
+      setIsLoading(true);
+
+      // Get the docRef of the item in the inventory of the current user
+      const docRef = doc(collection(db, "user", uid, "inventory"), item.trim().toLowerCase());
+
+      // Delete the doc
+      await deleteDoc(docRef);
+
+      // Update and rerender inventory after removing the item
+      await updateInventory();
+    } catch (error) {
+      console.error("Error deleting item from inventory:", error);
+    } finally {
+      // Hide loading animation
+      setIsLoading(false);
+    }
+  };
+
   // Function to filter inventory based on search term
   const filterInventory = (inventory, searchTerm) => {
     if (!searchTerm) return inventory;
@@ -291,7 +312,7 @@ export default function Home({ params }) {
 
       // Check if the response is OK
       if (!response.ok) {
-        alert("Invalid inventory data")
+        alert("Invalid inventory data");
         throw new Error("Failed to export inventory");
       }
 
@@ -324,7 +345,6 @@ export default function Home({ params }) {
       setIsLoading(false);
     }
   };
-
 
   // Handle pagination next page
   const handleNextPage = () => {
@@ -486,6 +506,12 @@ export default function Home({ params }) {
                       onClick={() => removeItem(item.name)}
                     >
                       -
+                    </button>
+                    <button
+                      className="p-4 border-l-2 border-slate-900 hover:bg-slate-900 w-20"
+                      onClick={() => deleteItem(item.name)}
+                    >
+                      Delete
                     </button>
                   </div>
                 </li>
