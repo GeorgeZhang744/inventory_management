@@ -18,7 +18,7 @@ The Inventory Management App is a web application designed to help users manage 
 
 You can access the live version of the Inventory Management App at the following link:
 
-[Inventory Management App - Live](https://inventory-management-5hcbppj9x-george-zhangs-projects-c74cdd0e.vercel.app/)
+[Inventory Management App - Live](https://inventory-management-3ygr5hsiu-george-zhangs-projects-c74cdd0e.vercel.app/)
 
 ## Features
 
